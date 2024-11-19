@@ -7,7 +7,8 @@ TOKEN_FILE="./gitlab_pat.txt"
 # Check if the token file exists
 if [[ ! -f "$TOKEN_FILE" ]]; then
     echo "Error: Personal Access Token file ($TOKEN_FILE) not found."
-    echo "Please create the file and add your GitLab Personal Access Token inside it."
+    touch gitlab_pat.txt
+    echo "Please add your GitLab Personal Access Token inside it the file that was just created called $TOKEN_FILE."
     exit 1
 fi
 
@@ -32,6 +33,9 @@ read -p "Enter the directory to clone into: " DEST_DIR
 if [[ -z "$DEST_DIR" ]]; then
     echo "Error: Destination directory cannot be empty."
     exit 1
+else 
+    echo "Changing to $DEST_DIR"
+    cd $DEST_DIR
 fi
 
 # Construct the full clone URL
@@ -39,7 +43,7 @@ CLONE_URL="https://oauth2:${PERSONAL_ACCESS_TOKEN}@gitlab.com/${REPO_PATH}"
 
 # Perform the clone operation
 echo "Cloning repository..."
-git clone "$CLONE_URL" "$DEST_DIR"
+git clone "$CLONE_URL"
 
 # Check if the clone was successful
 if [[ $? -eq 0 ]]; then
