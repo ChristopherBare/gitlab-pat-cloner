@@ -3,6 +3,7 @@
 # Path to the file storing the GitLab Personal Access Token
 # Make sure the file named "gitlab_pat.txt" exists in the same folder as this script
 TOKEN_FILE="./gitlab_pat.txt"
+DEST_DIR="$HOME/Documents/code"
 
 # Check if the token file exists
 if [[ ! -f "$TOKEN_FILE" ]]; then
@@ -22,14 +23,18 @@ if [[ -z "$PERSONAL_ACCESS_TOKEN" ]]; then
 fi
 
 # Prompt the user for the GitLab repository path (after gitlab.com/)
-read -p "Enter the repository path (e.g., group/project.git): " REPO_PATH
-if [[ -z "$REPO_PATH" ]]; then
-    echo "Error: Repository path cannot be empty."
-    exit 1
+if [[ -n "$1" ]]; then
+    REPO_PATH="$1"
+else
+    echo "No repository path provided via args."
+    read -p "Enter the repository path (e.g., group/project.git): " REPO_PATH
+    if [[ -z "$REPO_PATH" ]]; then
+        echo "Error: Repository path cannot be empty."
+        exit 1
+    fi
 fi
 
 # Prompt the user for the destination directory
-read -p "Enter the directory to clone into: " DEST_DIR
 if [[ -z "$DEST_DIR" ]]; then
     echo "Error: Destination directory cannot be empty."
     exit 1
@@ -42,7 +47,7 @@ fi
 CLONE_URL="https://oauth2:${PERSONAL_ACCESS_TOKEN}@gitlab.com/${REPO_PATH}"
 
 # Perform the clone operation
-echo "Cloning repository..."
+echo "Cloning repository: $CLONE_URL"
 git clone "$CLONE_URL"
 
 # Check if the clone was successful
